@@ -6,7 +6,7 @@ public class ticTacToe {
         Scanner input = new Scanner(System.in);
         Random random = new Random();
 
-
+// if user chose a position that already taken before.
         // create the matrix of the:
         String[][] ticTacToeMatrix = new String[3][3];
 
@@ -17,6 +17,7 @@ public class ticTacToe {
         int userRow;
         int userCol;
         boolean win = false;
+        boolean validPos ;
 
 
         // make it empty matrix until user add position
@@ -28,20 +29,28 @@ public class ticTacToe {
 
         do {
 
-            /// display the board
+                /// display the board
             displayBoard(ticTacToeMatrix);
 
             //add user choice:
-            System.out.println("chose your index [row][column], first row:");
-            userRow = input.nextInt();
+            do {
 
-            System.out.println("chose your index [row][column], now column:");
-            userCol = input.nextInt();
+                System.out.println("chose your index [row][column], first row:");
+                userRow = input.nextInt();
+
+                System.out.println("chose your index [row][column], now column:");
+                userCol = input.nextInt();
+
+                /// if is valid or not:
+                validPos = isValidPos(ticTacToeMatrix,userRow,userCol);
+
+
+            }while(!validPos);
 
             ticTacToeMatrix[userRow][userCol] = userChoice;
 
 
-            ///check validate:
+            ///check win or not:
             if(counter >= 2){
                win =  isWin(ticTacToeMatrix,userChoice);
             }
@@ -49,14 +58,21 @@ public class ticTacToe {
             counter++;
         } while (!win);
 
-
     }
 
 
-//    public static boolean checkValidPos(String input) {
-//
-//        return true;
-//    }
+    public static boolean isValidPos(String[][] matrix,int row, int col) {
+        if(
+           matrix[row][col].toLowerCase().contains("x") ||
+           matrix[row][col].toLowerCase().contains("o")
+        ){
+            System.out.println("this position is taken, please chose another:");
+            return false;
+        }
+
+        return true;
+    }
+
 
     public static boolean isWin(String[][] matrix, String choice) {
         int counterHorizontal = 0;
