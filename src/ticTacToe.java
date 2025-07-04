@@ -34,7 +34,7 @@ public class ticTacToe {
 
         do {
 
-                /// display the board
+            /// display the board
             displayBoard(ticTacToeMatrix);
 
             //add user choice:
@@ -47,11 +47,12 @@ public class ticTacToe {
                 userCol = input.nextInt();
 
                 /// if is valid or not:
-
+                if(counter >=0 && counter <= 8) {
                     validPos = isValidPos(ticTacToeMatrix, userRow, userCol);
-                    if(!validPos){
+                    if (!validPos) {
                         System.out.println("user chose taken place ");
                     }
+                }
 
             }while(!validPos);
 
@@ -62,12 +63,13 @@ public class ticTacToe {
 
             ///check win or not:
             if(counter >= 2){
-               win =  isWin(ticTacToeMatrix,userChoice,counter);
-               if(win){
-                   break; // end loop
-               }
+                win =  isWin(ticTacToeMatrix,userChoice,counter);
+                if(win){
+                    System.out.println("user wins");
+                    break; // end loop
+                }
             }
-
+            counter++;
 
             //determine a letter for computer:
             if(userChoice.toLowerCase().replace(" ","").contains("x")){
@@ -80,10 +82,11 @@ public class ticTacToe {
                 compRow = (int)(Math.random() * 3);
                 compCol = (int)(Math.random() * 3);
 
-
-                    validPos = isValidPos(ticTacToeMatrix,compRow,compCol);
-                    if(!validPos){
+                if(counter>=0 && counter<=8) {
+                    validPos = isValidPos(ticTacToeMatrix, compRow, compCol);
+                    if (!validPos) {
                         System.out.println("computer chose taken place ");
+                    }
                 }
 
 
@@ -92,13 +95,13 @@ public class ticTacToe {
             ticTacToeMatrix[compRow][compCol] = computerVariable;
 
             if(counter >= 2){ // call the method only when there is chance of win.
-             win =  isWin(ticTacToeMatrix,computerVariable,counter);
-             if (win){
-                 break; //end loop
-             }
+                win =  isWin(ticTacToeMatrix,computerVariable,counter);
+                if (win){
+                    break; //end loop
+                }
             }
 
-
+        counter++;
         } while (!win);
         displayBoard(ticTacToeMatrix);
 
@@ -107,8 +110,8 @@ public class ticTacToe {
 
     public static boolean isValidPos(String[][] matrix,int row, int col) {
         if(
-           matrix[row][col].toLowerCase().contains("x") ||
-           matrix[row][col].toLowerCase().contains("o")
+                matrix[row][col].toLowerCase().contains("x") ||
+                        matrix[row][col].toLowerCase().contains("o")
         ){
             System.out.println("this position is taken, please chose another:");
             return false;
@@ -184,7 +187,7 @@ public class ticTacToe {
                 System.out.println("win !, diagonally");
                 return true;
             }
-            else if (counter >= 8) { // to detect the draw
+            else if (counter >= 9) { // to detect the draw
                 System.out.println("draw");
                 return true;
             }
