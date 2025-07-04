@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -6,20 +7,28 @@ public class ticTacToe {
         Scanner input = new Scanner(System.in);
         Random random = new Random();
 
-// if user chose a position that already taken before.
-        // create the matrix of the:
+
         String[][] ticTacToeMatrix = new String[3][3];
 
-        System.out.println("chose X or O:");
-        String userChoice = input.nextLine(); //e.g  X
+        String userChoice;
+        boolean xOrO;
+        do{
+
+            System.out.println("chose X or O:");
+            userChoice = input.nextLine(); //e.g  X
+
+            checkVariable(userChoice); // exception method...
+            xOrO = checkVariable(userChoice);
+
+        }while(!xOrO);
 
         int counter = 0 ;
         boolean win = false;
         boolean validPos = false;
         String computerVariable;
 
-        int userRow;
-        int userCol;
+        int userRow = 0;
+        int userCol = 0;
 
         int compRow;
         int compCol;
@@ -40,18 +49,27 @@ public class ticTacToe {
             //add user choice:
             do {
 
-                System.out.println("chose your index [row][column], first row:");
-                userRow = input.nextInt();
+                try { //integer and array exceptions:
+                    System.out.println("chose your index [row][column], first row:");
+                    userRow = input.nextInt();
 
-                System.out.println("chose your index [row][column], now column:");
-                userCol = input.nextInt();
+                    System.out.println("chose your index [row][column], now column:");
+                    userCol = input.nextInt();
 
-                /// if is valid or not:
+                    /// if is valid or not:
                     validPos = isValidPos(ticTacToeMatrix, userRow, userCol);
                     if (!validPos) {
                         System.out.println("user chose taken place ");
                     }
-
+                }catch (InputMismatchException e){
+                    System.out.println("enter integer only");
+                    input.nextLine(); //remove space
+                    validPos = false;
+                }catch (ArrayIndexOutOfBoundsException e){
+                    System.out.println(e.getMessage());
+                    input.nextLine();
+                    validPos = false;
+                }
 
             }while(!validPos);
 
@@ -81,12 +99,12 @@ public class ticTacToe {
                 compRow = (int)(Math.random() * 3);
                 compCol = (int)(Math.random() * 3);
 
-
-                    validPos = isValidPos(ticTacToeMatrix, compRow, compCol);
-                    if (!validPos) {
-                        System.out.println("computer chose taken place ");
+                    if(counter >=0 && counter <= 8) { // in case of draw
+                        validPos = isValidPos(ticTacToeMatrix, compRow, compCol);
+                        if (!validPos) {
+                            System.out.println("computer chose taken place ");
+                        }
                     }
-
 
 
             }while(!validPos);
@@ -103,6 +121,26 @@ public class ticTacToe {
         counter++;
         } while (!win);
         displayBoard(ticTacToeMatrix);
+
+    }
+
+    //method check if it's X or O
+    public static boolean checkVariable(String var){
+        try {
+
+            if(
+              var.toLowerCase().replace(" ","").equals("x") ||
+              var.toLowerCase().replace(" ","").equals("o")
+            ){
+                return true;
+
+            }else{
+                throw new Exception("only chose X or O");
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
 
     }
 
@@ -148,7 +186,7 @@ public class ticTacToe {
                         counterDiagonal1++;
                     }
                 }
-                else if (i + 2 == 2) {
+                if (i + j == 2) {
                     if (matrix[i][j].contains(choice)) {
                         counterDiagonal2++;
                     }
