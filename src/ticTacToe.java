@@ -47,12 +47,11 @@ public class ticTacToe {
                 userCol = input.nextInt();
 
                 /// if is valid or not:
-                if(counter >=0 && counter <= 8) {
                     validPos = isValidPos(ticTacToeMatrix, userRow, userCol);
                     if (!validPos) {
                         System.out.println("user chose taken place ");
                     }
-                }
+
 
             }while(!validPos);
 
@@ -82,12 +81,12 @@ public class ticTacToe {
                 compRow = (int)(Math.random() * 3);
                 compCol = (int)(Math.random() * 3);
 
-                if(counter>=0 && counter<=8) {
+
                     validPos = isValidPos(ticTacToeMatrix, compRow, compCol);
                     if (!validPos) {
                         System.out.println("computer chose taken place ");
                     }
-                }
+
 
 
             }while(!validPos);
