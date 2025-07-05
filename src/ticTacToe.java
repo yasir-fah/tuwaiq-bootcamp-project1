@@ -12,6 +12,8 @@ public class ticTacToe {
 
         String userChoice;
         boolean xOrO;
+
+        // make sure user enter X or O:
         do{
 
             System.out.println("chose X or O:");
@@ -22,84 +24,107 @@ public class ticTacToe {
 
         }while(!xOrO);
 
-        int counter = 0 ;
-        boolean win = false;
-        boolean validPos = false;
-        String computerVariable;
 
-        int userRow = 0;
-        int userCol = 0;
-
-        int compRow;
-        int compCol;
-
-
-        // make it empty matrix until user add position
-        for (int i = 0; i < ticTacToeMatrix.length; i++) {
-            for (int j = 0; j < ticTacToeMatrix.length; j++) {
-                ticTacToeMatrix[i][j] = " ";
-            }
+        // make the user chose number of rounds:
+        int rounds = 1;
+        try {
+            System.out.println("chose number of Round please: ");
+            rounds = input .nextInt();
+        } catch (InputMismatchException e) {
+            System.out.println("enter a valid integer please");
+        } finally {
+            System.out.println("the number of rounds will be: "+ rounds);
         }
 
-        do {
+        //track wins:
+        int userWin = 0;
+        int compWin = 0;
 
-            /// display the board
-            displayBoard(ticTacToeMatrix);
+        int x = 1;
+        while(x <= rounds) {
 
-            //add user choice:
+            int counter = 0 ;
+            boolean win = false;
+            boolean validPos = false;
+            String computerVariable;
+
+            int userRow = 0;
+            int userCol = 0;
+
+            int compRow;
+            int compCol;
+
+
+            System.out.println("round number: "+x);
+            // make it empty matrix until user add position
+            for (int i = 0; i < ticTacToeMatrix.length; i++) {
+                for (int j = 0; j < ticTacToeMatrix.length; j++) {
+                    ticTacToeMatrix[i][j] = " ";
+                }
+            }
+
+
             do {
 
-                try { //integer and array exceptions:
-                    System.out.println("chose your index [row][column], first row:");
-                    userRow = input.nextInt();
+                /// display the board
+                displayBoard(ticTacToeMatrix);
 
-                    System.out.println("chose your index [row][column], now column:");
-                    userCol = input.nextInt();
+                //add user choice:
+                do {
 
-                    /// if is valid or not:
-                    validPos = isValidPos(ticTacToeMatrix, userRow, userCol);
-                    if (!validPos) {
-                        System.out.println("user chose taken place ");
+                    try { //integer and array exceptions:
+                        System.out.println("chose your index [row][column], first row:");
+                        userRow = input.nextInt();
+
+                        System.out.println("chose your index [row][column], now column:");
+                        userCol = input.nextInt();
+
+                        /// if is valid or not:
+                        validPos = isValidPos(ticTacToeMatrix, userRow, userCol);
+                        if (!validPos) {
+                            System.out.println("user chose taken place ");
+                        }
+                    } catch (InputMismatchException e) {
+                        System.out.println("enter integer only");
+                        input.nextLine(); //remove space
+                        validPos = false;
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        System.out.println(e.getMessage());
+                        input.nextLine();
+                        validPos = false;
                     }
-                }catch (InputMismatchException e){
-                    System.out.println("enter integer only");
-                    input.nextLine(); //remove space
-                    validPos = false;
-                }catch (ArrayIndexOutOfBoundsException e){
-                    System.out.println(e.getMessage());
-                    input.nextLine();
-                    validPos = false;
+
+                } while (!validPos);
+
+
+                //position confirmed
+                ticTacToeMatrix[userRow][userCol] = userChoice;
+
+
+                ///check win or not:
+                if (counter >= 2) { // call the method only when there is chance of win.
+                    win = isWin(ticTacToeMatrix, userChoice, counter);
+                    if (win) {
+                        System.out.println("user wins this round");
+                        userWin++;
+                        break; // end loop
+                    }
+                }
+                counter++;
+
+                //determine a letter for computer:
+                if (userChoice.toLowerCase().replace(" ", "").contains("x")) {
+                    computerVariable = "O";
+                }
+                else {
+                    computerVariable = "X";
                 }
 
-            }while(!validPos);
+                do {
+                    compRow = (int) (Math.random() * 3);
+                    compCol = (int) (Math.random() * 3);
 
-
-            //position confirmed
-            ticTacToeMatrix[userRow][userCol] = userChoice;
-
-
-            ///check win or not:
-            if(counter >= 2){
-                win =  isWin(ticTacToeMatrix,userChoice,counter);
-                if(win){
-                    System.out.println("user wins");
-                    break; // end loop
-                }
-            }
-            counter++;
-
-            //determine a letter for computer:
-            if(userChoice.toLowerCase().replace(" ","").contains("x")){
-                computerVariable = "O";
-            }else{
-                computerVariable = "X";
-            }
-
-            do {
-                compRow = (int)(Math.random() * 3);
-                compCol = (int)(Math.random() * 3);
-
-                    if(counter >=0 && counter <= 8) { // in case of draw
+                    if (counter >= 0 && counter <= 8) { // in case of draw
                         validPos = isValidPos(ticTacToeMatrix, compRow, compCol);
                         if (!validPos) {
                             System.out.println("computer chose taken place ");
@@ -107,24 +132,39 @@ public class ticTacToe {
                     }
 
 
-            }while(!validPos);
+                } while (!validPos);
 
-            ticTacToeMatrix[compRow][compCol] = computerVariable;
+                ticTacToeMatrix[compRow][compCol] = computerVariable;
 
-            if(counter >= 2){ // call the method only when there is chance of win.
-                win =  isWin(ticTacToeMatrix,computerVariable,counter);
-                if (win){
-                    break; //end loop
+                if (counter >= 2) { // call the method only when there is chance of win.
+                    win = isWin(ticTacToeMatrix, computerVariable, counter);
+                    if (win) {
+                        compWin++;
+                        System.out.println("computer wins this round!");
+                        break; //end loop
+                    }
                 }
-            }
 
-        counter++;
-        } while (!win);
-        displayBoard(ticTacToeMatrix);
+                counter++;
+            } while (!win);
 
+            displayBoard(ticTacToeMatrix);
+
+            x++;
+        }
+
+        if(userWin > compWin){
+            System.out.println("at the end of the game \nuser wins !");
+        }else if(compWin > userWin){
+            System.out.println("at the end of the game \ncomputer wins !");
+        }else{
+            System.out.println("draw, no one win");
+        }
     }
 
-    //method check if it's X or O
+
+
+    //method check if it's X or O (Exception)
     public static boolean checkVariable(String var){
         try {
 
@@ -145,10 +185,11 @@ public class ticTacToe {
     }
 
 
+
     public static boolean isValidPos(String[][] matrix,int row, int col) {
         if(
                 matrix[row][col].toLowerCase().contains("x") ||
-                        matrix[row][col].toLowerCase().contains("o")
+                matrix[row][col].toLowerCase().contains("o")
         ){
             System.out.println("this position is taken, please chose another:");
             return false;
@@ -156,6 +197,7 @@ public class ticTacToe {
 
         return true;
     }
+
 
 
     public static boolean isWin(String[][] matrix, String choice, int counter) {
@@ -240,10 +282,10 @@ public class ticTacToe {
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix.length; j++) {
                 if (j < matrix.length - 1) {
-                    System.out.print("("+i+","+j+")"+(matrix[i][j])+" | ");
+                    System.out.print("("+i+","+j+") "+(matrix[i][j])+" | ");
                 }
                 else {
-                    System.out.print("("+i+","+j+")"+(matrix[i][j]));
+                    System.out.print("("+i+","+j+") "+(matrix[i][j]));
                 }
             }
             // new line
